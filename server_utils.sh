@@ -7,7 +7,7 @@ if [ -n "$1" ]; then
         VERBOSE=" "   
     fi
     if [ $1 == "--help" ]; then
-        echo 'This script installs differents tools for the Shell (Check https://github.com/PAPAMICA/terminal).
+        echo 'This script installs differents tools for the Shell (Check https://github.com/Lucroz94/terminal).
     Use the "--verbose" argument to display the logs'
         exit
     fi
@@ -117,6 +117,16 @@ zshrc="alias cat='batcat --style=\"header\" --paging=never'
 alias bat='batcat --style=\"header\" --paging=never'
 alias catn='batcat --pager \"less -RF\"'
 alias batn='batcat --pager \"less -RF\"'"
+app_install $app $install $zshrc
+
+## ncdu
+app='ncdu'
+install='apt-get install -y ncdu '$VERBOSE''
+app_install $app $install $zshrc
+
+## progress
+app='progress'
+install='apt-get install -y progress '$VERBOSE''
 app_install $app $install $zshrc
 
 ## btop
