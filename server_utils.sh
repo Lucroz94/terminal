@@ -153,13 +153,13 @@ install='curl -s https://api.github.com/repos/cheat/cheat/releases/latest \
 | wget -qi - && \chdea
 gzip -d cheat-linux-amd64.gz '$VERBOSE' && \
 chmod +x cheat-linux-amd64 && mv cheat-linux-amd64 /usr/local/bin/cheat && rm -rf cheat-linux-amd64* && \
-git clone https://github.com/PAPAMICA/cheatsheets.git ~/.config/cheat/cheatsheets/papamica/ '$VERBOSE' && \
-curl -s "https://raw.githubusercontent.com/PAPAMICA/terminal/main/cheat_conf.yml" >> ~/.config/cheat/conf.yml && \
-curl -s "https://raw.githubusercontent.com/PAPAMICA/terminal/main/cheat_autocomplete.zsh" >> ~/.oh-my-zsh/custom/cheat.zsh && \ 
+git clone https://github.com/Lucroz94/cheatsheets.git ~/.config/cheat/cheatsheets/lucroz/ '$VERBOSE' && \
+curl -s "https://raw.githubusercontent.com/Lucroz94/terminal/main/cheat_conf.yml" >> ~/.config/cheat/conf.yml && \
+curl -s "https://raw.githubusercontent.com/Lucroz94/terminal/main/cheat_autocomplete.zsh" >> ~/.oh-my-zsh/custom/cheat.zsh && \ 
 mkdir ~/.config/cheat/cheatsheets/personal/'
 zshrc="alias \"?\"=\"cheat\"
 alias \"??\"=\"cheat perso\"
-alias cheat-update='git -C ~/.config/cheat/cheatsheets/papamica/ pull '$VERBOSE' && echo \" ✅ Cheats updated !\"'"
+alias cheat-update='git -C ~/.config/cheat/cheatsheets/lucroz/ pull '$VERBOSE' && echo \" ✅ Cheats updated !\"'"
 app_install $app $install $zshrc
 
 ## direnv

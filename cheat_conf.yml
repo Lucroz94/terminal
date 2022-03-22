@@ -20,9 +20,9 @@ pager: less -RF
 
 cheatpaths:
 
-  - name: papamica
-    path: ~/.config/cheat/cheatsheets/papamica
-    tags: [ papamica ]
+  - name: lucroz
+    path: ~/.config/cheat/cheatsheets/lucroz
+    tags: [ lucroz ]
     readonly: false
 
   - name: personal

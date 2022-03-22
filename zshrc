@@ -23,7 +23,7 @@ alias htop="btop --utf-force"
 # cheat
 alias "?"="cheat"
 alias "??"="cheat perso"
-alias cheat-update='git -C ~/.config/cheat/cheatsheets/papamica/ pull > /dev/null 2> /dev/null && echo " ✅ Cheats updated !"'
+alias cheat-update='git -C ~/.config/cheat/cheatsheets/lucroz/ pull > /dev/null 2> /dev/null && echo " ✅ Cheats updated !"'
 
 # direnv
 eval "$(direnv hook zsh)"

@@ -40,35 +40,6 @@ update-brew() {
     brew missing
 }
 
-update-atom() {
-    if ! which apm &>/dev/null; then return; fi
-
-    echo -e "\n${GREEN}Updating Atom${CLEAR}"
-    apm upgrade -c false
-}
-
-update-npm() {
-    if ! which npm &>/dev/null; then return; fi
-
-    echo -e "\n${GREEN}Updating npm Packages${CLEAR}"
-    npm update -g
-}
-
-update-gem() {
-    if ! which gem &>/dev/null; then return; fi
-
-    echo -e "\n${GREEN}Updating gems${CLEAR}"
-    gem update --user-install
-    gem cleanup --user-install
-}
-
-update-yarn() {
-    if ! which yarn &>/dev/null; then return; fi
-
-    echo -e "${GREEN}Updating Brew Formula's${CLEAR}"
-    yarn upgrade --latest
-}
-
 update-pip2() {
     if ! which pip2 &>/dev/null; then return; fi
     if ! which python2 &>/dev/null; then return; fi
@@ -100,21 +71,12 @@ update-macos() {
     softwareupdate -i -a
 }
 
-update-office() {
-    echo -e "\n${GREEN}Updating MS-Office${CLEAR}"
-    /Library/Application\ Support/Microsoft/MAU2.0/Microsoft\ AutoUpdate.app/Contents/MacOS/msupdate --install
-}
 
 update-all() {
     update-brew
-    update-atom
-    update-npm
-    update-gem
-    update-yarn
     update-pip2
     update-pip3
     update-app_store
-    update-office
     update-macos
 }
 
