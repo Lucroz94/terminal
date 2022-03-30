@@ -124,6 +124,11 @@ app='ncdu'
 install='apt-get install -y ncdu '$VERBOSE''
 app_install $app $install $zshrc
 
+## neofetch
+app='neofetch'
+install='apt-get install -y neofetch && bash -c $'echo "neofetch" >> /etc/profile.d/customMOTD.sh && chmod +x /etc/profile.d/customMOTD.sh' '$VERBOSE''
+app_install $app $install $zshrc
+
 ## progress
 app='progress'
 install='apt-get install -y progress '$VERBOSE''
