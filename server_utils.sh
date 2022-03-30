@@ -126,8 +126,8 @@ app_install $app $install $zshrc
 
 ## neofetch
 app='neofetch'
-install='apt-get install -y neofetch && \
-zsh -c $'echo "neofetch" >> /etc/profile.d/customMOTD.sh && chmod +x /etc/profile.d/customMOTD.sh' '$VERBOSE''
+install='apt-get install -y neofetch '$VERBOSE'' && \
+zsh -c $ 'echo "neofetch" >> /etc/profile.d/customMOTD.sh && chmod +x /etc/profile.d/customMOTD.sh'
 app_install $app $install $zshrc
 
 ## progress
