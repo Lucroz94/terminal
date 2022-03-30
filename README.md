@@ -46,3 +46,11 @@ With --verbose :
 ```bash
 apt update && apt install -y curl && curl -Ls https://raw.githubusercontent.com/Lucroz94/terminal/main/server_utils.sh | bash -s -- verbose
 ```
+
+## ⚙️ Install script for Debian / Ubuntu / Kaisen personnal computer
+
+With --verbose :
+
+```bash
+apt update && apt install -y curl && curl -Ls https://raw.githubusercontent.com/Lucroz94/terminal/main/kaisen_linux.sh | bash -s -- verbose
+```
