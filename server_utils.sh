@@ -21,6 +21,8 @@ for argument in "$@"; do
         elif [ $argument == "--all-users" ]; then
             echo " ✅  All users selected"
             ALLUSERS=1
+        elif [ $argument == "--verbose" ]; then
+            echo " ✅  Verbose selected"
         else
             echo "This argument is not recognized ($argument)"
             exit
