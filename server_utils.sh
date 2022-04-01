@@ -1,14 +1,19 @@
-#!/bin/bash
+!/bin/bash
 
 # Active Verbose & Help
 VERBOSE="> /dev/null 2> /dev/null"
 if [ -n "$1" ]; then
     if [ $1 == "--verbose" ]; then
         VERBOSE=" "   
-    fi
-    if [ $1 == "--help" ]; then
-        echo 'This script installs differents tools for the Shell (Check https://github.com/Lucroz94/terminal).
-    Use the "--verbose" argument to display the logs'
+    elif [ $1 == "--help" ]; then
+        echo 'This script installs differents tools for the Shell (Check https://github.com/PAPAMICA/terminal).
+    Use "--verbose" to display the logs
+    Use "--motd" to update your motd'
+        exit
+    elif [ $1 == "--motd" ]; then
+        echo " ✅ MOTD selected"
+    else
+        echo "This argument is not recognized ($1)"
         exit
     fi
 fi
@@ -42,6 +47,21 @@ apt_install () {
         echo "   ($i/8) ❌ $1"
     fi
 }
+copy_to_usershome () {
+    _USERS="$(awk -F':' '{ if ( $3 >= 500 ) print $1 }' /etc/passwd)"
+    FOLDERSOURCE=$1
+    FOLDERDESTINATION=$2
+    for _USER in $_USERS; do
+        _DIR="/home/${_USER}"
+        if [ -d "$_DIR" ]; then
+            mkdir -p $_DIR/$FOLDERDESTINATION
+            echo " ✅ $FOLDERSOURCE copied to $_USER home !"
+            /bin/cp -r "$FOLDERSOURCE" "$_DIR/$FOLDERDESTINATION"
+            chown -R $(id -un $_USER):$(id -gn $_USER) "$_DIR"
+        fi
+    done
+}
+
 echo ""
 echo "-- Requirements --"
 echo " 🤖 Installing $1 ..."
@@ -53,6 +73,24 @@ for PACKAGE in $PACKAGES; do
 done
 echo " ✅ All requirements have been installed  !"
 
+if [ $1 == "--motd" ]; then
+    echo ""
+    echo "-- MOTD --"
+    echo " 🤖 Installing  MOTD..."
+    eval apt-get install -y neofetch figlet $VERBOSE
+    mkdir -p /root/.config/neofetch && touch /root/.config/neofetch/config.conf
+    curl -s https://raw.githubusercontent.com/Lucroz94/terminal/main/neofetch.conf > /root/.config/neofetch/config.conf
+    mkdir -p /etc/neofetch && touch /etc/neofetch/config.conf
+    curl -s https://raw.githubusercontent.com/Lucroz94/terminal/main/neofetch.conf > /etc/neofetch/config.conf
+    copy_to_usershome /root/.config/neofetch/ .config
+    rm -rf /etc/motd /etc/update-motd.d/*
+    touch /etc/update-motd.d/00-motd && chmod +x /etc/update-motd.d/00-motd
+    echo "#!/bin/sh
+
+figlet $(uname -n | cut -d '.' -f 1)
+neofetch --config /etc/neofetch/config.conf" >> /etc/update-motd.d/00-motd
+    echo " ✅ MOTD have been configured !"
+fi
 
 ## Applications
 app_install () {
@@ -124,12 +162,6 @@ app='ncdu'
 install='apt-get install -y ncdu '$VERBOSE''
 app_install $app $install $zshrc
 
-## neofetch
-app='neofetch'
-install='apt-get install -y neofetch '$VERBOSE'' && \
-zsh -c $'echo "neofetch" >> /etc/profile.d/customMOTD.sh && chmod +x /etc/profile.d/customMOTD.sh'
-app_install $app $install $zshrc
-
 ## progress
 app='progress'
 install='apt-get install -y progress '$VERBOSE''
@@ -165,7 +197,7 @@ curl -s "https://raw.githubusercontent.com/Lucroz94/terminal/main/cheat_autocomp
 mkdir ~/.config/cheat/cheatsheets/personal/'
 zshrc="alias \"?\"=\"cheat\"
 alias \"??\"=\"cheat perso\"
-alias cheat-update='git -C ~/.config/cheat/cheatsheets/lucroz/ pull '$VERBOSE' && echo \" ✅ Cheats updated !\"'"
+alias cheat-update='git -C ~/.config/cheat/cheatsheets/lucroz94/ pull > /dev/null 2> /dev/null && echo \" ✅ Cheats updated !\"'"
 app_install $app $install $zshrc
 
 ## direnv
@@ -191,10 +223,10 @@ install='apt install -y exa '$VERBOSE''
 zshrc='alias ls="exa -a --icons"         # short, multi-line
 alias ll="exa -1a --icons"        # list, 1 per line
 alias ld="ll"             # ^^^, NOTE: Trying to move to this for alternate hand commands
-alias la="exa -la --icons"        # list with info
+alias la="exa -lagh --icons"        # list with info
 alias lt="exa -a --tree --icons --level=2"        # list with tree level 2
 alias ltf="exa -a --tree --icons"        # list with tree
-alias lat="exa -la --tree --icons"        # list with info and tree'
+alias lat="exa -lagh --tree --icons"        # list with info and tree'
 app_install $app $install $zshrc
 
 ## fd
@@ -245,6 +277,15 @@ app='zsh_syntax_highlighting'
 install='git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.zsh/zsh-syntax-highlighting '$VERBOSE''
 zshrc='source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh'
 app_install $app $install $zshrc
+## Copy to others users
+echo ""
+echo "-- OTHERS USERS --"
+copy_to_usershome /root/.config/cheat .config
+copy_to_usershome /root/.oh-my-zsh .
+copy_to_usershome /root/.zsh .
+copy_to_usershome /root/.zshrc .
+
+sed 's/bash/zsh/g' /etc/passwd
 
 localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 zsh
