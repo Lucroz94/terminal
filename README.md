@@ -3,11 +3,11 @@
 
 ## ⚡️ Informations
 
-**Operating System :** Kaisen-Linux (Debian Based : https://kaisenlinux.org/)
+**Operating System :** [Kaisen-Linux](https://kaisenlinux.org/)
 
-**Terminal Client :** [Tabby] (https://tabby.sh/)
+**Terminal Client :** [Tabby](https://tabby.sh/)
 
-**Text Editor :** [Micro] (https://micro-editor.github.io/)
+**Text Editor :** [Micro](https://micro-editor.github.io/)
 
 ## 📦️ Packages for the server_utils.sh
 
