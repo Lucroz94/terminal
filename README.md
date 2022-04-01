@@ -41,14 +41,10 @@
 bash -c "$(curl -s https://raw.githubusercontent.com/Lucroz94/terminal/main/server_utils.sh)"
 ```
 
-If you want an oneliner and you don't have curl installed :
-```bash
-apt update && apt install -y curl && bash -c "$(curl -s https://raw.githubusercontent.com/Lucroz94/terminal/main/server_utils.sh)"
-```
+If you want an oneliner and you don't have curl installed, with --verbose and --motd and --all-users (arguments can be removed) :
 
-With --verbose and --motd :
 ```bash
-apt update && apt install -y curl && curl -Ls https://raw.githubusercontent.com/Lucroz94/terminal/main/server_utils.sh | bash -s -- --verbose --motd
+apt update && apt install -y curl && curl -Ls https://raw.githubusercontent.com/Lucroz94/terminal/main/server_utils.sh | bash -s -- --verbose --motd --all-users
 ```
 
 ## ⚙️ Install script for Debian / Ubuntu / Kaisen personnal computer (WIP)
