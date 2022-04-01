@@ -23,7 +23,6 @@ for argument in "$@"; do
             ALLUSERS=1
         elif [ $argument == "--verbose" ]; then
             echo " ✅  Verbose selected"
-            VERBOSE=1
         else
             echo "This argument is not recognized ($argument)"
             exit
