@@ -1,13 +1,16 @@
 #!/bin/bash
-
 # Active Verbose & Help
+
 VERBOSE="> /dev/null 2> /dev/null"
+MOTD=0
+ALLUSERS=0
+
 for argument in "$@"; do
     if [ -n "$argument" ]; then
         if [ $argument == "--verbose" ]; then
             VERBOSE=" "   
         elif [ $argument == "--help" ]; then
-            echo 'This script installs differents tools for the Shell (Check https://github.com/PAPAMICA/terminal).
+            echo 'This script installs differents tools for the Shell (Check https://github.com/Lucroz94/terminal).
         Use "--verbose" to display the logs
         Use "--motd" to update your motd'
             exit
@@ -24,8 +27,8 @@ for argument in "$@"; do
     fi
 done
 
-
 # Check if Debian / Ubuntu
+
 if [ -x "$(command -v apt-get)" ]; then
     :
 else
@@ -34,17 +37,16 @@ else
 fi
 
 # Update System
+
 echo ""
 echo "-- Update  --"
 eval apt-get update $VERBOSE
 UPGRADE=$(apt update 2>/dev/null | tail -1)
 echo " ℹ️  $UPGRADE"
 
-
-
-
 # Installation
 ## Requierements
+
 apt_install () {
     eval apt-get install -y $1 $VERBOSE
     if [ $? -eq 0 ]; then
@@ -74,7 +76,7 @@ zsh_all_users () {
     for _USER in $_USERS; do
         _DIR="/home/${_USER}"
         if [ -d "$_DIR" ]; then
-            chsh --shell /sbin/nologin root
+            chsh --shell /bin/zsh $_USER
         fi
     done
 }
@@ -90,7 +92,7 @@ for PACKAGE in $PACKAGES; do
 done
 echo " ✅ All requirements have been installed  !"
 
-if [ $MOTD == 1 ]; then
+if [[ "$MOTD" == 1 ]]; then
     echo ""
     echo "-- MOTD --"
     echo " 🤖 Installing  MOTD..."
@@ -99,21 +101,20 @@ if [ $MOTD == 1 ]; then
     curl -s https://raw.githubusercontent.com/Lucroz94/terminal/main/neofetch.conf > /root/.config/neofetch/config.conf
     mkdir -p /etc/neofetch && touch /etc/neofetch/config.conf
     curl -s https://raw.githubusercontent.com/Lucroz94/terminal/main/neofetch.conf > /etc/neofetch/config.conf
-    if [ $ALLUSER -eq 1 ]; then
+    if [[ "$ALLUSERS" == 1 ]]; then
         copy_to_usershome /root/.config/neofetch/ .config
     fi
     rm -rf /etc/motd /etc/update-motd.d/*
     touch /etc/update-motd.d/00-motd && chmod +x /etc/update-motd.d/00-motd
     echo "#!/bin/sh
-#By Mickael (PAPAMICA) Asseline
+
 figlet $(uname -n | cut -d '.' -f 1)
 neofetch --config /etc/neofetch/config.conf" >> /etc/update-motd.d/00-motd
     echo " ✅ MOTD have been configured !"
 fi
-    
-
 
 ## Applications
+
 app_install () {
     echo ""
     echo "-- $app --"
@@ -300,7 +301,8 @@ zshrc='source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh'
 app_install $app $install $zshrc
 
 ## Copy to others users
-if [ $ALLUSER -eq 1 ]; then
+
+if [[ "$ALLUSERS" == 1 ]]; then
     echo ""
     echo "-- OTHERS USERS --"
     copy_to_usershome /root/.config/cheat .config
