@@ -1,20 +1,30 @@
 #!/bin/bash
-
 # Active Verbose & Help
-VERBOSE="> /dev/null 2> /dev/null"
-if [ -n "$1" ]; then
-    if [ $1 == "--verbose" ]; then
-        VERBOSE=" "   
-    fi
-    if [ $1 == "--help" ]; then
-        echo 'This script installs differents tools for the Shell (Check https://github.com/Lucroz94/terminal).
-    Use the "--verbose" argument to display the logs'
-        exit
-    fi
-fi
 
+VERBOSE="> /dev/null 2> /dev/null"
+ALLUSERS=0
+
+for argument in "$@"; do
+    if [ -n "$argument" ]; then
+        if [ $argument == "--verbose" ]; then
+            VERBOSE=" "   
+        elif [ $argument == "--help" ]; then
+            echo 'This script installs differents tools for the Shell (Check https://github.com/Lucroz94/terminal).
+        Use "--verbose" to display the logs
+        Use "--all--users" to apply the script to root and every other users'
+            exit
+        elif [ $argument == "--all-users" ]; then
+            echo " ✅  All users selected"
+            ALLUSERS=1
+        else
+            echo "This argument is not recognized ($argument)"
+            exit
+        fi
+    fi
+done
 
 # Check if Debian / Ubuntu
+
 if [ -x "$(command -v apt-get)" ]; then
     :
 else
@@ -23,25 +33,50 @@ else
 fi
 
 # Update System
+
 echo ""
 echo "-- Update  --"
-eval apt-get update $VERBOSE
-UPGRADE=$(apt update 2>/dev/null | tail -1)
+eval kaisen-update $VERBOSE
+UPGRADE=$(kaisen-update 2>/dev/null | tail -1)
 echo " ℹ️  $UPGRADE"
-
-
-
 
 # Installation
 ## Requierements
+
 apt_install () {
-    eval apt-get install -y $1 $VERBOSE
+    eval kaisen-update -y $1 $VERBOSE
     if [ $? -eq 0 ]; then
         echo "   ($i/8) ✅ $1"
     else
         echo "   ($i/8) ❌ $1"
     fi
 }
+
+copy_to_usershome () {
+    _USERS="$(awk -F':' '{ if ( $3 >= 500 ) print $1 }' /etc/passwd)"
+    FOLDERSOURCE=$1
+    FOLDERDESTINATION=$2
+    for _USER in $_USERS; do
+        _DIR="/home/${_USER}"
+        if [ -d "$_DIR" ]; then
+            mkdir -p $_DIR/$FOLDERDESTINATION
+            echo " ✅ $FOLDERSOURCE copied to $_USER home !"
+            /bin/cp -r "$FOLDERSOURCE" "$_DIR/$FOLDERDESTINATION"
+            chown -R $(id -un $_USER):$(id -gn $_USER) "$_DIR"
+        fi
+    done
+}
+
+zsh_all_users () {
+    _USERS="$(awk -F':' '{ if ( $3 >= 500 ) print $1 }' /etc/passwd)"
+    for _USER in $_USERS; do
+        _DIR="/home/${_USER}"
+        if [ -d "$_DIR" ]; then
+            chsh --shell /bin/zsh $_USER
+        fi
+    done
+}
+
 echo ""
 echo "-- Requirements --"
 echo " 🤖 Installing $1 ..."
@@ -55,6 +90,7 @@ echo " ✅ All requirements have been installed  !"
 
 
 ## Applications
+
 app_install () {
     echo ""
     echo "-- $app --"
@@ -79,23 +115,6 @@ app_install () {
 
 }
 
-## git
-app='git'
-install='apt-get install -y git '$VERBOSE''
-zshrc="gic() { eval 'git add . && git commit -a -m \"'\$@'\" && git push'}
-alias gaa=\"git add *\"
-alias ga=\"git add\"
-alias gps=\"git push\"
-alias gpl=\"git pull\""
-app_install $app $install $zshrc
-
-## zsh
-app='zsh'
-install='apt-get install -y zsh '$VERBOSE' && \
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended '$VERBOSE' && \
-sed -i -e "s/ZSH_THEME=\"robbyrussell\"/ZSH_THEME="agnoster"/g" ~/.zshrc '$VERBOSE''
-zshrc=''
-app_install $app $install $zshrc
 
 ## ad
 app='ad'
@@ -119,30 +138,12 @@ alias catn='batcat --pager \"less -RF\"'
 alias batn='batcat --pager \"less -RF\"'"
 app_install $app $install $zshrc
 
-## ncdu
-app='ncdu'
-install='apt-get install -y ncdu '$VERBOSE''
-app_install $app $install $zshrc
 
 ## progress
 app='progress'
 install='apt-get install -y progress '$VERBOSE''
 app_install $app $install $zshrc
 
-## btop
-app='btop'
-install='mkdir btop && cd btop && \
-curl -s https://api.github.com/repos/aristocratos/btop/releases/latest \
-| grep "browser_download_url.*btop-x86_64-linux-musl.tbz" \
-| cut -d : -f 2,3 \
-| tr -d \" \
-| wget -qi - && \
-tar -xf btop-x86_64-linux-musl.tbz '$VERBOSE' && \
-make install '$VERBOSE' && cd .. && rm -rf btop'
-zshrc='alias top="btop --utf-force"
-alias btop="btop --utf-force"
-alias htop="btop --utf-force"'
-app_install $app $install $zshrc
 
 ## cheat
 app='cheat'
@@ -159,7 +160,7 @@ curl -s "https://raw.githubusercontent.com/Lucroz94/terminal/main/cheat_autocomp
 mkdir ~/.config/cheat/cheatsheets/personal/'
 zshrc="alias \"?\"=\"cheat\"
 alias \"??\"=\"cheat perso\"
-alias cheat-update='git -C ~/.config/cheat/cheatsheets/lucroz/ pull '$VERBOSE' && echo \" ✅ Cheats updated !\"'"
+alias cheat-update='git -C ~/.config/cheat/cheatsheets/lucroz94/ pull > /dev/null 2> /dev/null && echo \" ✅ Cheats updated !\"'"
 app_install $app $install $zshrc
 
 ## direnv
@@ -185,10 +186,10 @@ install='apt install -y exa '$VERBOSE''
 zshrc='alias ls="exa -a --icons"         # short, multi-line
 alias ll="exa -1a --icons"        # list, 1 per line
 alias ld="ll"             # ^^^, NOTE: Trying to move to this for alternate hand commands
-alias la="exa -la --icons"        # list with info
+alias la="exa -lagh --icons"        # list with info
 alias lt="exa -a --tree --icons --level=2"        # list with tree level 2
 alias ltf="exa -a --tree --icons"        # list with tree
-alias lat="exa -la --tree --icons"        # list with info and tree'
+alias lat="exa -lagh --tree --icons"        # list with info and tree'
 app_install $app $install $zshrc
 
 ## fd
@@ -227,8 +228,8 @@ install='git clone https://github.com/rupa/z.git /bin/z '$VERBOSE''
 zshrc='. /bin/z/z.sh'
 app_install $app $install $zshrc
 
-## zsh_autocompletion
-app='zsh_autocompletion'
+## zsh-autosuggestions
+app='zsh-autosuggestions'
 install='git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions '$VERBOSE''
 zshrc='source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#808080"'
@@ -240,5 +241,18 @@ install='git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.z
 zshrc='source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh'
 app_install $app $install $zshrc
 
+## Copy to others users
+
+if [[ "$ALLUSERS" == 1 ]]; then
+    echo ""
+    echo "-- OTHERS USERS --"
+    copy_to_usershome /root/.config/cheat .config
+    copy_to_usershome /root/.oh-my-zsh .
+    copy_to_usershome /root/.zsh .
+    copy_to_usershome /root/.zshrc .
+    zsh_all_users
+fi
+
+chsh --shell /bin/zsh root
 localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 zsh

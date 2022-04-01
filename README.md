@@ -3,7 +3,7 @@
 
 ## ⚡️ Informations
 
-**Operating System :** Kaisen-Linux (Debian Based)
+**Operating System :** Kaisen-Linux (Debian Based : https://kaisenlinux.org/)
 
 **Terminal Client :** [Tabby] (https://tabby.sh/)
 
@@ -37,20 +37,16 @@
 
 ## ⚙️ Install script for Debian / Ubuntu server
 
-```bash
-bash -c "$(curl -s https://raw.githubusercontent.com/Lucroz94/terminal/main/server_utils.sh)"
-```
-
 If you want an oneliner and you don't have curl installed, with --verbose and --motd and --all-users (arguments can be removed) :
 
 ```bash
 apt update && apt install -y curl && curl -Ls https://raw.githubusercontent.com/Lucroz94/terminal/main/server_utils.sh | bash -s -- --verbose --motd --all-users
 ```
 
-## ⚙️ Install script for Debian / Ubuntu / Kaisen personnal computer (WIP)
+## ⚙️ Install script for Kaisen-Linux (WIP)
 
-With --verbose :
+With --verbose and --all-users :
 
 ```bash
-apt update && apt install -y curl && curl -Ls https://raw.githubusercontent.com/Lucroz94/terminal/main/kaisen_linux.sh | bash -s -- verbose --motd
+apt update && apt install -y curl && curl -Ls https://raw.githubusercontent.com/Lucroz94/terminal/main/kaisen_linux.sh | bash -s -- --verbose --all-users
 ```

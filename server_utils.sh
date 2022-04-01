@@ -12,7 +12,8 @@ for argument in "$@"; do
         elif [ $argument == "--help" ]; then
             echo 'This script installs differents tools for the Shell (Check https://github.com/Lucroz94/terminal).
         Use "--verbose" to display the logs
-        Use "--motd" to update your motd'
+        Use "--motd" to update your motd
+        Use "--all-users" to apply the script to all users on the machine'
             exit
         elif [ $argument == "--motd" ]; then
             echo " ✅  MOTD selected"
@@ -287,8 +288,8 @@ install='git clone https://github.com/rupa/z.git /bin/z '$VERBOSE''
 zshrc='. /bin/z/z.sh'
 app_install $app $install $zshrc
 
-## zsh_autocompletion
-app='zsh_autocompletion'
+## zsh-autosuggestions
+app='zsh-autosuggestions'
 install='git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions '$VERBOSE''
 zshrc='source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#808080"'
