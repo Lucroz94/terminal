@@ -48,7 +48,7 @@ apt update && apt install -y curl && bash -c "$(curl -s https://raw.githubuserco
 
 With --verbose and --motd :
 ```bash
-apt update && apt install -y curl && curl -Ls https://raw.githubusercontent.com/Lucroz94/terminal/main/server_utils.sh | bash -s -- verbose --motd
+apt update && apt install -y curl && curl -Ls https://raw.githubusercontent.com/Lucroz94/terminal/main/server_utils.sh | bash -s -- --verbose --motd
 ```
 
 ## ⚙️ Install script for Debian / Ubuntu / Kaisen personnal computer (WIP)
