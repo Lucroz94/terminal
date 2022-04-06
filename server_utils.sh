@@ -246,9 +246,7 @@ app_install $app $install $zshrc
 app='exa'
 install='apt install -y exa '$VERBOSE''
 zshrc='alias ls="exa -a --icons"         # short, multi-line
-alias ll="exa -1a --icons"        # list, 1 per line
-alias ld="ll"             # ^^^, NOTE: Trying to move to this for alternate hand commands
-alias la="exa -lagh --icons"        # list with info
+alias ll="exa -lagh --icons"        # list with info
 alias lt="exa -a --tree --icons --level=2"        # list with tree level 2
 alias ltf="exa -a --tree --icons"        # list with tree
 alias lat="exa -lagh --tree --icons"        # list with info and tree'
