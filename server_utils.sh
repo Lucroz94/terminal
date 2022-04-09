@@ -1,28 +1,26 @@
 #!/bin/bash
-# Active Verbose & Help
 
+# Active Verbose & Help
 VERBOSE="> /dev/null 2> /dev/null"
 MOTD=0
 ALLUSERS=0
-
 for argument in "$@"; do
     if [ -n "$argument" ]; then
         if [ $argument == "--verbose" ]; then
+            echo " ✅ Verbose selected"
             VERBOSE=" "   
         elif [ $argument == "--help" ]; then
             echo 'This script installs differents tools for the Shell (Check https://github.com/Lucroz94/terminal).
         Use "--verbose" to display the logs
         Use "--motd" to update your motd
-        Use "--all-users" to apply the script to all users on the machine'
+        Use "--all-users" to apply all modifications to alls users'
             exit
         elif [ $argument == "--motd" ]; then
-            echo " ✅  MOTD selected"
+            echo " ✅ MOTD selected"
             MOTD=1
         elif [ $argument == "--all-users" ]; then
-            echo " ✅  All users selected"
+            echo " ✅ All users selected"
             ALLUSERS=1
-        elif [ $argument == "--verbose" ]; then
-            echo " ✅  Verbose selected"
         else
             echo "This argument is not recognized ($argument)"
             exit
@@ -30,8 +28,12 @@ for argument in "$@"; do
     fi
 done
 
-# Check if Debian / Ubuntu
 
+# Check if Debian / Ubuntu and if root
+if [ "$EUID" -ne 0 ]
+  then echo " ❌ Please run as root"
+  exit
+fi
 if [ -x "$(command -v apt-get)" ]; then
     :
 else
