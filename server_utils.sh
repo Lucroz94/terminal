@@ -224,7 +224,7 @@ curl -s "https://raw.githubusercontent.com/Lucroz94/terminal/main/cheat_autocomp
 mkdir ~/.config/cheat/cheatsheets/personal/'
 zshrc="alias \"?\"=\"cheat\"
 alias \"??\"=\"cheat perso\"
-alias cheat-update='git -C ~/.config/cheat/cheatsheets/lucroz94/ pull > /dev/null 2> /dev/null && echo \" ✅ Cheats updated !\"'"
+alias cheat-update='git -C ~/.config/cheat/cheatsheets/lucroz/ pull > /dev/null 2> /dev/null && echo \" ✅ Cheats updated !\"'"
 app_install $app $install $zshrc
 
 ## direnv
